@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub User Creation Date</title>
+    <!-- Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for styling */
+        body {
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        #creation-date {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mb-4">GitHub User Creation Date</h1>
+
+        <!-- GitHub Username Form -->
+        <form id="githubForm" class="mb-3">
+            <div class="mb-3">
+                <label for="username" class="form-label">GitHub Username:</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter GitHub username" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Get Creation Date</button>
+        </form>
+
+        <!-- Display area for creation date -->
+        <div id="creation-date" class="alert alert-info" role="alert">
+            <!-- Creation date will be displayed here -->
+        </div>
+
+        <!-- Display area for errors -->
+        <div id="error-message" class="alert alert-danger" role="alert" style="display: none;">
+            <!-- Error message will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies (popper.js) from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8lVVG+q5CN71r9t1u0R9K/4a6B1+g+e5qT2v6Z3I6I6Vl4y9F7+a4Wv4y9jXh" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedD69U6tA7M9g5Qn+x4wXmG1g7D0rBsq3l3rP5gG5c8jJ4oYn+c0c7E8O" crossorigin="anonymous"></script>
+
+    <script>
+        // JavaScript for fetching and displaying the creation date
+
+        document.getElementById('githubForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = document.getElementById('username').value;
+            const apiUrl = `https://api.github.com/users/${username}`;
+            const creationDateElement = document.getElementById('creation-date');
+            const errorMessageElement = document.getElementById('error-message');
+
+            // Clear previous results and errors
+            creationDateElement.textContent = '';
+            errorMessageElement.style.display = 'none'; // Hide error initially
+
+            // Fetch data from GitHub API
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`GitHub API Error: ${response.status} - ${response.statusText}`);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(data => {
+                    const createdAt = new Date(data.created_at); // Convert to Date object
+                    const formattedDate = createdAt.toISOString().slice(0, 10); // Format to YYYY-MM-DD
+                    creationDateElement.textContent = `Creation Date: ${formattedDate}`;
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error('Error fetching data:', error);
+                    errorMessageElement.textContent = `Error: Could not retrieve creation date.  Please check the username and your internet connection.  Error: ${error.message}`;
+                    errorMessageElement.style.display = 'block'; // Show error
+                });
+        });
+    </script>
+</body>
+</html>
