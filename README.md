@@ -33,3 +33,14 @@ The code was generated using AI assistance based on the project brief and automa
 
 ## License
 MIT License - See LICENSE file for details
+
+
+---
+
+## Round 2 Update
+
+**Brief**: Show an aria-live alert element with the id '#github-status' that reports when a lookup starts ('Loading...'), succeeds ('User found!'), or fails ('User not found.').
+
+**New Evaluation Criteria**:
+- An element with id '#github-status' exists.
+- The status text changes on successful lookup.

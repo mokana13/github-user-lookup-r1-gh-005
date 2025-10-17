@@ -44,6 +44,9 @@
         <div id="error-message" class="alert alert-danger" role="alert" style="display: none;">
             <!-- Error message will be displayed here -->
         </div>
+
+        <!-- Aria-live alert -->
+        <div id="github-status" role="alert" aria-live="polite" style="display: none;"></div>
     </div>
 
     <!-- Bootstrap JS and dependencies (popper.js) from CDN -->
@@ -60,10 +63,15 @@
             const apiUrl = `https://api.github.com/users/${username}`;
             const creationDateElement = document.getElementById('creation-date');
             const errorMessageElement = document.getElementById('error-message');
+            const githubStatus = document.getElementById('github-status');  // Get the status element
 
             // Clear previous results and errors
             creationDateElement.textContent = '';
             errorMessageElement.style.display = 'none'; // Hide error initially
+
+            // Show "Loading..." in the aria-live element
+            githubStatus.textContent = 'Loading...';
+            githubStatus.style.display = 'block';
 
             // Fetch data from GitHub API
             fetch(apiUrl)
@@ -77,12 +85,24 @@
                     const createdAt = new Date(data.created_at); // Convert to Date object
                     const formattedDate = createdAt.toISOString().slice(0, 10); // Format to YYYY-MM-DD
                     creationDateElement.textContent = `Creation Date: ${formattedDate}`;
+
+                    // Update the aria-live element for success
+                    githubStatus.textContent = 'User found!';
+                    setTimeout(() => {
+                      githubStatus.style.display = 'none'; // Hide after a short delay
+                    }, 2000);  // Hide after 2 seconds
                 })
                 .catch(error => {
                     // Handle errors
                     console.error('Error fetching data:', error);
                     errorMessageElement.textContent = `Error: Could not retrieve creation date.  Please check the username and your internet connection.  Error: ${error.message}`;
                     errorMessageElement.style.display = 'block'; // Show error
+
+                    // Update the aria-live element for failure
+                    githubStatus.textContent = 'User not found.';
+                    setTimeout(() => {
+                      githubStatus.style.display = 'none'; // Hide after a short delay
+                    }, 2000); // Hide after 2 seconds
                 });
         });
     </script>
